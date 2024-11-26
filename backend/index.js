@@ -17,17 +17,61 @@ mongoose.connect(process.env.MONGO_URI)
         console.error('Database connection error:', error);
     });
 
+//schema
+
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        match: /.+\@.+\..+/ // Simple email regex
+    },
+    role: {
+        type: String,
+        required: true
+    }
+}, {
+    timestamps: true // Automatically manage createdAt and updatedAt fields
 });
 
-const User = mongoose.model('User ', userSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
+
+const roleSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    permissions: { type: Array, required: true }
+});
+
+const Role = mongoose.model('Role', roleSchema)
+
+const permissionSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    }
+});
+
+// Create the Permission model
+const Permission = mongoose.model('Permission', permissionSchema);
 
 const projectSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     location: { type: String, required: true },
-    users: {type: Array},
+    users: { type: Array },
     startdate: { type: Date, required: true },
     enddate: { type: Date, required: true },
     budget: { type: Number, required: true },
@@ -73,13 +117,96 @@ app.get('/projects', async (req, res) => {
     }
 });
 
-app.post('/projectsdelete', async (req,res) => {
-    const  deleteId = req.body.deleteProjectId
+app.post('/projectsdelete', async (req, res) => {
+    const deleteId = req.body.deleteProjectId
     try {
-        await Project.findByIdAndDelete({deleteId})
-        res.status(200).json({message: 'Delete Successfull'})
+        await Project.findByIdAndDelete({ deleteId })
+        res.status(200).json({ message: 'Delete Successfull' })
     } catch (error) {
-        res.status(500).json({message: 'Internal Server Error'})
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+})
+
+app.post('/permissionsadd', async (req, res) => {
+    const { name, description, type } = req.body
+    try {
+        const permissionData = new Permission({
+            name,
+            description,
+            type
+        })
+        await permissionData.save()
+        res.status(200).json({ message: "Permission added succesfully" })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' })
+    }
+})
+
+app.get('/permissions', async (req, res) => {
+    try {
+        const data = await Permission.find({})
+        res.status(200).json({ data })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+})
+
+app.post('/permissionsdelete', async (req, res) => {
+    const deleteId = req.body.deleteId
+    try {
+        await Permission.findByIdAndDelete(deleteId)
+        res.status(200).json({ message: "Permission Deleted Succesfully" })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+})
+
+app.post('/rolesadd', async (req, res) => {
+    const {name, permissions} = req.body
+    try {
+        const roleData = new Role({
+            name,
+            permissions
+        })
+        await roleData.save()
+        res.status(200).json({message: "Role added"})
+    } catch (error) {
+        res.status(500).json({message: "Internal server error"})
+    }
+})
+
+app.get('/roles', async (req, res) => {
+    try {
+        const data = await Role.find({})
+        res.status(200).json({ data })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
+    }
+})
+
+app.post('/usersadd', async (req, res) => {
+    const { name, email, role } = req.body.formData
+    try {
+        const roleData = new User({
+            name,
+            email,
+            role
+        })
+        await roleData.save()
+        res.status(200).json({message: "User added"})
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({message: "Internal server error"})
+    }
+})
+
+app.get('/users', async (req, res) => {
+    try {
+        const data = await User.find({})
+        res.status(200).json({ data })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" })
     }
 })
 

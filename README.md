@@ -1,6 +1,6 @@
-# Project Name
+# RBAC-UI
 
-This project is a React application that features a user-friendly sidebar navigation system. The sidebar is collapsible, allowing for better space management while providing dynamic routing to various sections of the application.
+This project is a React application that features a user-friendly dashboard navigation system. The sidebar is collapsible, allowing for better space management while providing dynamic routing to various sections of the application.
 
 ## Table of Contents
 

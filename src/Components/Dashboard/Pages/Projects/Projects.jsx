@@ -128,15 +128,24 @@ const Projects = (props) => {
         }
     };
 
+    const background = {
+        backgroundColor:'white',
+        borderRadius:'20px'
+    }
+
+    const inline = {
+        display: 'inline-block'
+    }
+
     return (
         <div style={{ padding: '20px' }}>
-            <Typography variant="h4" gutterBottom>
+            <span style={inline}><Typography variant="h4" gutterBottom>
                 Project Management
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleOpenForm}>
+            <Button className='mb-4' variant="contained" color="primary" onClick={handleOpenForm}>
                 Add Project
-            </Button>
-            <TableContainer sx={{ width: '100%' }}>
+            </Button></span>
+            <TableContainer style={background} sx={{ width: '100%' }}>
                 <Table>
                     <TableHead>
                         <TableRow>

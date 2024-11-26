@@ -12,6 +12,7 @@ export default function Body() {
     height: '100vh',
   };
 
+
   return (
     <div style={height}>
       <Navbar project={project} setProject={setProject} setSelectedProject={setSelectedProject}/>

@@ -2,6 +2,7 @@ import React from 'react'
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import './Breadcrumbs.css'
 
 function handleClick(event) {
   event.preventDefault();
@@ -10,7 +11,7 @@ function handleClick(event) {
 
 export default function Breadcrumb(props) {
   return (
-    <div role="presentation" onClick={handleClick}>
+    <div className='breadcrumbs' role="presentation" onClick={handleClick}>
       <Breadcrumbs aria-label="breadcrumb">
         <Link underline="hover" color="inherit" to="/">
           {/* {props.project.map((project) => (
