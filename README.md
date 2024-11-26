@@ -1,38 +1,68 @@
-# RBAC-UI
+# User Management System
 
-This project is a React application that features a user-friendly dashboard navigation system. The sidebar is collapsible, allowing for better space management while providing dynamic routing to various sections of the application.
+## Project Overview
 
-## Table of Contents
+The User Management System is a comprehensive web application designed to streamline the management of users, roles, permissions, and projects within an organization. This application provides a robust dashboard that allows administrators and managers to easily navigate through user data, manage roles, assign permissions, and oversee projects efficiently.
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Components](#components)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+### Key Features
 
-## Features
-
-- User-friendly sidebar navigation
-- Collapsible sidebar for better space management
-- Dynamic routing with React Router
-- Responsive design
+- **Dashboard**: A central hub that provides an overview of user statistics, project statuses, and role distributions.
+- **User  Management**: Create, read, update, and delete user profiles. Users can be assigned specific roles and permissions, facilitating effective access control.
+- **Role Management**: Define and manage roles within the system. Each role can have specific permissions associated with it, allowing for granular control over what users can access and modify.
+- **Permission Panels**: Set up and manage permissions for different roles, ensuring that users have the appropriate access levels based on their responsibilities.
+- **Project Management**: Create and manage projects, assign users to projects, and track project progress.
 
 ## Technologies Used
 
-- **React**: A JavaScript library for building user interfaces
-- **React Router**: For routing and navigation
-- **Font Awesome**: For icons
-- **CSS**: For styling
+- **Frontend**: React, Material-UI
+- **Backend**: Node.js, Express
+- **Database**: MongoDB
+- **State Management**: Redux (if applicable)
+- **HTTP Client**: Axios
 
 ## Installation
 
-To get started with this project, follow these steps:
+Follow these steps to set up the project locally:
 
-1. Clone the repository:
+1. **Clone the Repository**:
+
    ```bash
-   git clone https://github.com/yourusername/project-name.git
-2. Navigate to the project directory:
-    cd project-name
+   git clone https://github.com/yourusername/user-management-system.git
+
+2. **Navigate to the Project Directory:**:
+
+   ```bash
+   cd user-management-system
+   
+3. **Install Frontend Dependencies:**:
+
+   ```bash
+   cd frontend
+   npm install
+
+4. **Install Backend Dependencies:**:
+
+   ```bash
+   cd ../backend
+   npm install
+   
+5. **Set Up Environment Variables:**:
+
+   ```bash
+  MONGODB_URI=your_mongodb_connection_string
+
+6. **Start the Backend Server:**:
+
+   ```bash
+  node index.js
+
+7. **Start the Frontend Application:**:
+
+   ```bash
+   cd ../frontend
+   npm run dev
+
+8. **Open Your Browser**:
+
+   ```bash
+   Visit http://localhost:5173 to access the application.
