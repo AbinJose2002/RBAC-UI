@@ -27,12 +27,12 @@ Follow these steps to set up the project locally:
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/yourusername/user-management-system.git
+   git clone https://github.com/AbinJose2002/RBAC-UI
 
 2. **Navigate to the Project Directory:**:
 
    ```bash
-   cd user-management-system
+   cd RBAC-UI
    
 3. **Install Frontend Dependencies:**:
 
