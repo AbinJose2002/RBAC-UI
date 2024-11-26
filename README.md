@@ -49,12 +49,12 @@ Follow these steps to set up the project locally:
 5. **Set Up Environment Variables:**:
 
    ```bash
-  MONGODB_URI=your_mongodb_connection_string
+   MONGODB_URI=your_mongodb_connection_string
 
 6. **Start the Backend Server:**:
 
    ```bash
-  node index.js
+   node index.js
 
 7. **Start the Frontend Application:**:
 
