@@ -34,6 +34,7 @@ const Permission = () => {
     const [permissionName, setPermissionName] = useState('');
     const [permissionDescription, setPermissionDescription] = useState('');
     const [permissionType, setPermissionType] = useState('read'); // Default type
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     useEffect(() => {
         fetchPermissions();
@@ -82,7 +83,6 @@ const Permission = () => {
         } else {
             // Add new permission
             try {
-                console.log(permissionData)
                 await axios.post('http://localhost:8080/permissionsadd', permissionData);
                 fetchPermissions();
             } catch (error) {
@@ -122,6 +122,11 @@ const Permission = () => {
         setDeletePermission(null);
     };
 
+    // Filter permissions based on the search query
+    const filteredPermissions = permissions.filter((permission) =>
+        permission.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div style={{ padding: '20px' }}>
             <Typography variant="h4" gutterBottom>
@@ -130,114 +135,125 @@ const Permission = () => {
             <Button variant="contained" color="primary" onClick={handleOpenForm}>
                 Add Permission
             </Button>
-            <TableContainer style={{ marginTop: '20px', backgroundColor: 'white', borderRadius: '10px' }}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Actions (Edit/Delete)</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {permissions.map((permission) => (
-                            <TableRow key={permission.id}>
-                                <TableCell>{permission.name}</TableCell>
-                                <TableCell>{permission.description}</TableCell>
-                                <TableCell>{permission.type}</TableCell>
-                                <TableCell>
-                                    <IconButton onClick={() => handleEditPermission(permission)}>
-                                        <img src={edit} alt="" width='25' height='25' />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleDeletePermission(permission)}>
-                                        <img src={bin} alt="" width='25' height='25' />
-                                    </IconButton>
-                                </TableCell>
+
+            {/* Search Field */}
+            <br />
+            <TextField
+                variant="outlined"
+                placeholder="Search Permissions"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ marginTop: '20px', marginBottom: '20px', width: '300px', backgroundColor: 'white' }} // Adjust width as needed
+                />
+    
+                <TableContainer style={{ marginTop: '20px', backgroundColor: 'white', borderRadius: '10px' }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Description</TableCell>
+                                <TableCell>Type</TableCell>
+                                <TableCell>Actions (Edit/Delete)</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-            <Modal
-                open={openForm}
-                onClose={handleCloseForm}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-            >
-                <Box 
-                    sx={{ 
-                        padding: '20px', 
-                        backgroundColor: 'white', 
-                        borderRadius: '10px', 
-                        width: { xs: '80%', sm: '60%', md: '40%' }, // Responsive width
-                        margin: 'auto', // Center the modal
-                        marginTop: '10%', // Add some top margin
-                    }}
+                        </TableHead>
+                        <TableBody>
+                            {filteredPermissions.map((permission) => (
+                                <TableRow key={permission.id}>
+                                    <TableCell>{permission.name}</TableCell>
+                                    <TableCell>{permission.description}</TableCell>
+                                    <TableCell>{permission.type}</TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => handleEditPermission(permission)}>
+                                            <img src={edit} alt="Edit" width='25' height='25' />
+                                        </IconButton>
+                                        <IconButton onClick={() => handleDeletePermission(permission)}>
+                                            <img src={bin} alt="Delete" width='25' height='25' />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+    
+                <Modal
+                    open={openForm}
+                    onClose={handleCloseForm}
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
                 >
-                    <Typography variant="h6" gutterBottom>
-                        {editPermission ? 'Edit Permission' : 'Add New Permission'}
-                    </Typography>
-                    
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="permission-type-label">Permission Type</InputLabel>
-                        <Select
-                            labelId="permission-type-label"
-                            value={permissionType}
-                            onChange={(e) => setPermissionType(e.target.value)}
-                        >
-                            <MenuItem value="read">Read</MenuItem>
-                            <MenuItem value="write">Write</MenuItem>
-                            <MenuItem value="delete">Delete</MenuItem>
-                        </Select>
-                    </FormControl>
-
-                    <TextField
-                        label="Permission Name"
-                        value={permissionName}
-                        onChange={(e) => setPermissionName(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Permission Description"
-                        value={permissionDescription}
-                        onChange={(e) => setPermissionDescription(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                        multiline
-                        rows={4} // Allow for multiple lines
-                    />
-                    <Button variant="contained" color="primary" onClick={handleAddOrEditPermission}>
-                        {editPermission ? 'Update' : 'Add'}
-                    </Button>
-                    <Button variant="contained" color="secondary" onClick={handleCloseForm} style={{ marginLeft: '10px' }}>
-                        Cancel
-                    </Button>
-                </Box>
-            </Modal>
-
-            <Dialog
-                open={confirmDelete}
-                onClose={handleCancelDelete}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete this permission?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCancelDelete}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} autoFocus>
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
-};
-
-export default Permission;
+                    <Box 
+                        sx={{ 
+                            padding: '20px', 
+                            backgroundColor: 'white', 
+                            borderRadius: '10px', 
+                            width: { xs: '80%', sm: '60%', md: '40%' }, // Responsive width
+                            margin: 'auto', // Center the modal
+                            marginTop: '10%', // Add some top margin
+                        }}
+                    >
+                        <Typography variant="h6" gutterBottom>
+                            {editPermission ? 'Edit Permission' : 'Add New Permission'}
+                        </Typography>
+                        
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="permission-type-label">Permission Type</InputLabel>
+                            <Select
+                                labelId="permission-type-label"
+                                value={permissionType}
+                                onChange={(e) => setPermissionType(e.target.value)}
+                            >
+                                <MenuItem value="read">Read</MenuItem>
+                                <MenuItem value="write">Write</MenuItem>
+                                <MenuItem value="delete">Delete</MenuItem>
+                            </Select>
+                        </FormControl>
+    
+                        <TextField
+                            label="Permission Name"
+                            value={permissionName}
+                            onChange={(e) => setPermissionName(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Permission Description"
+                            value={permissionDescription}
+                            onChange={(e) => setPermissionDescription(e.target.value)}
+                            fullWidth
+                            margin="normal"
+                            multiline
+                            rows={4} // Allow for multiple lines
+                        />
+                        <Button variant="contained" color="primary" onClick={handleAddOrEditPermission}>
+                            {editPermission ? 'Update' : 'Add'}
+                        </Button>
+                        <Button variant="contained" color="secondary" onClick={handleCloseForm} style={{ marginLeft: '10px' }}>
+                            Cancel
+                        </Button>
+                    </Box>
+                </Modal>
+    
+                <Dialog
+                    open={confirmDelete}
+                    onClose={handleCancelDelete}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete this permission?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCancelDelete}>Cancel</Button>
+                        <Button onClick={handleConfirmDelete} autoFocus>
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    };
+    
+    export default Permission;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import bin from '../../../../assets/bin-file.gif'
-import edit from '../../../../assets/edit.gif'
+import bin from '../../../../assets/bin-file.gif';
+import edit from '../../../../assets/edit.gif';
 import ProjectForm from './ProjectForm'; // Import the ProjectForm component
 import {
     Button,
@@ -22,19 +22,18 @@ import {
     Box,
     Select,
     MenuItem,
+    TextField, // Import TextField for search input
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 
-
 const Projects = (props) => {
-    useNavigate
+    const navigate = useNavigate(); // Corrected useNavigate usage
     const [projects, setProjects] = useState([]);
     const [openForm, setOpenForm] = useState(false);
     const [editProject, setEditProject] = useState(null); // Project to be edited
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [deleteProject, setDeleteProject] = useState(null); // Project to be deleted
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
     const [approvalOptions] = useState([
         'Manager Approval',
         'Team Lead Approval',
@@ -51,7 +50,7 @@ const Projects = (props) => {
         bgcolor: 'background.paper',
         boxShadow: '24',
         p: '1em 4em',
-        borderRadius: '20px'
+        borderRadius: '20px',
     };
 
     useEffect(() => {
@@ -59,8 +58,8 @@ const Projects = (props) => {
             try {
                 const response = await axios.get('http://localhost:8080/projects'); // Adjust the endpoint as needed
                 setProjects(response.data); // Set the projects state with the fetched data
-                props.setProject(response.data)
-                console.log(response.data)
+                props.setProject(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error("Error fetching projects:", error);
             }
@@ -93,17 +92,14 @@ const Projects = (props) => {
     };
 
     const handleConfirmDelete = async () => {
-        let deleteProjectId = deleteProject._id
+        let deleteProjectId = deleteProject._id;
         try {
-            await axios.post('http://localhost:8080/projectsdelete',{deleteProjectId}); // Adjust the endpoint as needed
+            await axios.post('http://localhost:8080/projectsdelete', { deleteProjectId }); // Adjust the endpoint as needed
             const updatedProjects = projects.filter((p) => p.id !== deleteProject.id);
             setProjects(updatedProjects);
             setConfirmDelete(false);
             setDeleteProject(null);
-            if(response.status){
-                alert(response.data)
-            }
-            useHistory.push('/');
+            navigate('/'); // Use navigate instead of useHistory
         } catch (error) {
             console.error("Error deleting project:", error);
         }
@@ -129,22 +125,40 @@ const Projects = (props) => {
     };
 
     const background = {
-        backgroundColor:'white',
-        borderRadius:'20px'
-    }
+        backgroundColor: 'white',
+        borderRadius: '20px',
+    };
 
     const inline = {
-        display: 'inline-block'
-    }
+        display: 'inline-block',
+    };
+
+    // Filter projects based on the search query
+    const filteredProjects = projects.filter((project) =>
+        project.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div style={{ padding: '20px' }}>
-            <span style={inline}><Typography variant="h4" gutterBottom>
-                Project Management
-            </Typography>
-            <Button className='mb-4' variant="contained" color="primary" onClick={handleOpenForm}>
-                Add Project
-            </Button></span>
+            <span style={inline}>
+                <Typography variant="h4" gutterBottom>
+                    Project Management
+                </Typography>
+                <Button className='mb-4' variant="contained" color="primary" onClick={handleOpenForm}>
+                    Add Project
+                </Button>
+            </span>
+
+            {/* Search Field */}
+            <br />
+            <TextField
+                variant="outlined"
+                placeholder="Search Projects"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ marginBottom: '20px', width: '300px', backgroundColor: 'white' }} // Adjust width as needed
+            />
+
             <TableContainer style={background} sx={{ width: '100%' }}>
                 <Table>
                     <TableHead>
@@ -155,11 +169,11 @@ const Projects = (props) => {
                             <TableCell>End Date</TableCell>
                             <TableCell>Budget</TableCell>
                             <TableCell>Approval Process</TableCell>
-                            <TableCell>Actions(Edit/ Delete)</TableCell>
+                            <TableCell>Actions (Edit/Delete)</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {projects.map((project) => (
+                        {filteredProjects.map((project) => (
                             <TableRow key={project.id}>
                                 <TableCell>{project.name}</TableCell>
                                 <TableCell>{project.description}</TableCell>
@@ -168,7 +182,7 @@ const Projects = (props) => {
                                 <TableCell>{project.budget}</TableCell>
                                 <TableCell>
                                     <Select
-                                        value={project.status}
+                                        value={project.approvalProcess}
                                         onChange={(e) => {
                                             const updatedProject = { ...project, approvalProcess: e.target.value };
                                             handleEditProjectSubmit(updatedProject);
@@ -183,12 +197,10 @@ const Projects = (props) => {
                                 </TableCell>
                                 <TableCell>
                                     <IconButton onClick={() => handleEditProject(project)}>
-                                        {/* <EditIcon /> */}
-                                        <img src={edit} alt="" width='30' height='30' />
+                                        <img src={edit} alt="Edit" width='30' height='30' />
                                     </IconButton>
                                     <IconButton onClick={() => handleDeleteProject(project)}>
-                                        {/* <DeleteIcon /> */}
-                                        <img src={bin} alt="" width='30' height='30' />
+                                        <img src={bin} alt="Delete" width='30' height='30' />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>

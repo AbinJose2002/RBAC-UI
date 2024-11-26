@@ -29,6 +29,7 @@ const Roles = () => {
     const [editRole, setEditRole] = useState(null);
     const [roleName, setRoleName] = useState('');
     const [selectedPermissions, setSelectedPermissions] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
     useEffect(() => {
         fetchRoles();
@@ -120,6 +121,11 @@ const Roles = () => {
         });
     };
 
+    // Filter roles based on the search query
+    const filteredRoles = roles.filter((role) =>
+        role.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div style={{ padding: '20px' }}>
             <Typography variant="h4" gutterBottom>
@@ -128,6 +134,17 @@ const Roles = () => {
             <Button variant="contained" color="primary" onClick={handleOpenForm}>
                 Add Role
             </Button>
+
+            {/* Search Field */}
+            <br />
+            <TextField
+                variant="outlined"
+                placeholder="Search Roles"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ marginTop: '20px', marginBottom: '20px', width: '300px', backgroundColor: 'white' }} // Adjust width as needed
+            />
+
             <TableContainer style={{ marginTop: '20px', backgroundColor: 'white', borderRadius: '10px' }}>
                 <Table>
                     <TableHead>
@@ -138,26 +155,26 @@ const Roles = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {roles.map((role) => (
+                        {filteredRoles.map((role) => (
                             <TableRow key={role.id}>
                                 <TableCell>{role.name}</TableCell>
                                 <TableCell>
-                {role.permissions.map(p => {
-                    const foundPermission = permissions.find(per => per._id === p);
-                    if (foundPermission) {
-                        return `${foundPermission.name} (${foundPermission.type})`; // Combine name and type with separator
-                    } else {
-                        console.warn(`Permission with ID ${p} not found in permissions array.`);
-                        return null; // Or return a placeholder value
-                    }
-                }).filter(Boolean).join(', ')} {/* Filter out null values */}
-            </TableCell>
+                                    {role.permissions.map(p => {
+                                        const foundPermission = permissions.find(per => per._id === p);
+                                        if (foundPermission) {
+                                            return `${foundPermission.name} (${foundPermission.type})`; // Combine name and type with separator
+                                        } else {
+                                            console.warn(`Permission with ID ${p} not found in permissions array.`);
+                                            return null; // Or return a placeholder value
+                                        }
+                                    }).filter(Boolean).join(', ')} {/* Filter out null values */}
+                                </TableCell>
                                 <TableCell>
                                     <IconButton onClick={() => handleEditRole(role)}>
-                                        <img src={edit} width='25' height='25'/>
+                                        <img src={edit} alt="Edit" width='25' height='25' />
                                     </IconButton>
                                     <IconButton onClick={() => handleDeleteRole(role)}>
-                                        <img src={bin} width='25' height='25'/>
+                                        <img src={bin} alt="Delete" width='25' height='25' />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
@@ -183,7 +200,7 @@ const Roles = () => {
                     </Typography>
                     {permissions.map((permission) => (
                         <FormControlLabel
-                            key={permission.id}
+                            key={permission._id} // Ensure you're using the correct ID
                             control={
                                 <Checkbox
                                     checked={selectedPermissions.includes(permission._id)} // Ensure correct ID reference
