@@ -12,6 +12,7 @@ import Permission from '../Permission/Permission'
 import Projects from '../Projects/Projects'
 import User from '../User/User'
 import Roles from '../Roles/Roles'
+import { Padding } from '@mui/icons-material';
 
 export default function Dashboard() {
     const [date, setDate] = useState(new Date());
@@ -60,13 +61,12 @@ export default function Dashboard() {
                 <div className="col-lg-8 col-sm-12">
                     <Permission />
                 </div>
-                <div className="col-lg-4 col-sm-12">
-                <h4>Date</h4>
-                <Calendar
-                    onChange={setDate}
-                    value={date}
-                    style='border: none'
-                />
+                <div className="col-lg-4 col-sm-12" style={{paddingTop: '1em'}}>
+                    <h4>Date</h4>
+                    <Calendar
+                        onChange={setDate}
+                        value={date}
+                    />
                 </div>
             </div>
 

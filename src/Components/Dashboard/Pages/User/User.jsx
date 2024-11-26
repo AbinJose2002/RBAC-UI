@@ -104,7 +104,7 @@ export default function User() {
     );
 
     return (
-        <div>
+        <div style={{paddingTop:'1em'}}>
             <Typography variant="h4" gutterBottom>
                 Users
             </Typography>
