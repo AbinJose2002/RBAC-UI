@@ -1,0 +1,6 @@
+.home {
+    flex: 1; /* Take up remaining space */
+    padding: 20px; /* Add some padding */
+    background-color: #f9f9f9; /* Optional: background color for Home */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+  }

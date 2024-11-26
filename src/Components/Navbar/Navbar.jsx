@@ -5,13 +5,12 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import './Navbar.css'
 
-export default function Navbar() {
+export default function Navbar(props) {
     const [project, setProject] = React.useState('');
 
     const handleChange = (event) => {
         setProject(event.target.value);
-        console.log(project);
-        
+        props.setProject(event.target.value)
     };
     return (
         <nav class="navbar navbar-expand-lg ">
@@ -23,7 +22,7 @@ export default function Navbar() {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                        <li class="nav-item dropdown">
+                        {/* <li class="nav-item dropdown">
                             <div>
                                 <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="demo-simple-select-standard-label">Select Project</InputLabel>
@@ -37,13 +36,17 @@ export default function Navbar() {
                                         <MenuItem value="">
                                             <em>None</em>
                                         </MenuItem>
-                                        <MenuItem value={1}>Project 1</MenuItem>
-                                        <MenuItem value={2}>Project 2</MenuItem>
-                                        <MenuItem value={3}>Project 3</MenuItem>
+                                        {props.project.map((project) => (
+                                            <MenuItem key={project.id} value={project.name} onClick={()=>{props.setSelectedProject(project.name)}}>
+                                                {project.name}
+                                            </MenuItem>
+                                            
+                                        ))}
+
                                     </Select>
                                 </FormControl>
                             </div>
-                        </li>
+                        </li> */}
                     </ul>
                     <form class="d-flex" role="search">
                         <button class="btn btn-outline-success" type="submit" onClick={() => { alert('Logged Out. Token Cleared') }}>Log Out</button>
